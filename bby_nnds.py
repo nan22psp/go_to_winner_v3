@@ -228,11 +228,11 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
 
                 # --- 🎨 TELEGRAM MESSAGE FORMATTING ---
                 tg_message = (
-                    f"<b>☘️ 𝗕𝗶𝗴𝘄𝗶𝗻 𝟯𝟬-𝗦𝗲𝗰𝗼𝗻𝗱𝘀 ☘️</b>\n"
+                    f"☘️ 𝗕𝗶𝗴𝘄𝗶𝗻 𝟯𝟬-𝗦𝗲𝗰𝗼𝗻𝗱𝘀 ☘️\n"
                     f"━━━━━━━━━━━━━━━━━━\n"
                     f"{win_lose_text}"
                     f"⏰ Pᴇʀɪᴏᴅ: <code>{next_issue}</code>\n"
-                    f"🤖 Cʜᴏɪᴄᴇ {predicted}</b>\n"
+                    f"🤖 Cʜᴏɪᴄᴇ {predicted}\n"
                     f"📊 Cᴏɴғɪᴅᴇɴᴄᴇ: {final_prob} %\n"
                    # f"💡 <b>အကြောင်းပြချက် :</b>\n"
                    # f"{reason}\n"
