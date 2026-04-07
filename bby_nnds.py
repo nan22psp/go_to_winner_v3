@@ -127,7 +127,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 latest_record = records[0]
                 latest_issue = str(latest_record["issueNumber"])
                 latest_number = int(latest_record["number"])
-                latest_size = "BIG" if latest_number >= 5 else "SMALL"
+                latest_size = "𝗕𝗜𝗚" if latest_number >= 5 else "𝗦𝗠𝗔𝗟𝗟"
                 
                 if latest_issue == LAST_PROCESSED_ISSUE: return 
                 LAST_PROCESSED_ISSUE = latest_issue
@@ -144,14 +144,14 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                     TOTAL_PREDICTIONS += 1 
                     
                     if is_win:
-                        win_lose_status = "𝗪𝗜𝗡🟢"
+                        win_lose_status = "𝗪𝗜𝗡 🟢"
                         CURRENT_WIN_STREAK += 1
                         CURRENT_LOSE_STREAK = 0
                         just_won = True 
                         if CURRENT_WIN_STREAK > LONGEST_WIN_STREAK:
                             LONGEST_WIN_STREAK = CURRENT_WIN_STREAK
                     else:
-                        win_lose_status = "𝗟𝗢𝗦𝗘🔴"
+                        win_lose_status = "𝗟𝗢𝗦𝗘 🔴"
                         CURRENT_LOSE_STREAK += 1
                         CURRENT_WIN_STREAK = 0
                         if CURRENT_LOSE_STREAK > LONGEST_LOSE_STREAK:
@@ -162,7 +162,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                     win_lose_text = (
                         f"⏰ Pᴇʀɪᴏᴅ: <code>{latest_issue}</code>\n"                       
                         f"📊 Rᴇsᴜʟᴛ: {win_lose_status} | {latest_size}\n"
-                        f"━━━━━━━━━━━━━━━━━━\n"
+                        f"━━━━━━━━━━━━━━━━\n"
                     )
 
                 # --- AI Pattern (10-Pattern Dynamic Learning) ---
@@ -171,7 +171,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 history_docs.reverse()
                 all_history = [doc["size"] for doc in history_docs]
                 
-                predicted = "BIG"
+                predicted = "𝗕𝗜𝗚"
                 base_prob = 55.0
                 reason = "Pattern အသစ်ဖြစ်နေသဖြင့် သမိုင်းကြောင်းအရ တွက်ချက်ထားသည်"
                 
@@ -187,25 +187,25 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                         for i in range(len(all_history) - current_len):
                             if all_history[i:i+current_len] == recent_pattern:
                                 next_result = all_history[i+current_len]
-                                if next_result == 'BIG': big_next_count += 1
-                                elif next_result == 'SMALL': small_next_count += 1
+                                if next_result == '𝗕𝗜𝗚': big_next_count += 1
+                                elif next_result == '𝗦𝗠𝗔𝗟𝗟': small_next_count += 1
                                     
                         total_pattern_matches = big_next_count + small_next_count
                         if total_pattern_matches > 0:
                             big_prob = (big_next_count / total_pattern_matches) * 100
                             small_prob = (small_next_count / total_pattern_matches) * 100
-                            pattern_str = "-".join(recent_pattern).replace('BIG', 'B').replace('SMALL', 'S')
+                            pattern_str = "-".join(recent_pattern).replace('𝗕𝗜𝗚', 'B').replace('𝗦𝗠𝗔𝗟𝗟', 'S')
                             
                             if big_prob > small_prob:
-                                predicted = "BIG"
+                                predicted = "𝗕𝗜𝗚"
                                 base_prob = big_prob
                                 reason = f"[{pattern_str}] လာလျှင် အကြီးဆက်ထွက်လေ့ရှိ၍"
                             elif small_prob > big_prob:
-                                predicted = "SMALL"
+                                predicted = "𝗦𝗠𝗔𝗟𝗟"
                                 base_prob = small_prob
                                 reason = f"[{pattern_str}] လာလျှင် အသေးဆက်ထွက်လေ့ရှိ၍"
                             else:
-                                predicted = "BIG"
+                                predicted = "𝗕𝗜𝗚"
                                 base_prob = 50.0
                                 reason = f"[{pattern_str}] အရင်က မျှခြေထွက်ဖူး၍ အကြီးရွေးထားသည်"
                             
@@ -213,14 +213,14 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                             break 
                             
                 if not pattern_found:
-                    predicted = "BIG" if all_history.count("SMALL") > all_history.count("BIG") else "SMALL"
+                    predicted = "𝗕𝗜𝗚" if all_history.count("𝗦𝗠𝗔𝗟𝗟") > all_history.count("𝗕𝗜𝗚") else "𝗦𝗠𝗔𝗟𝗟"
                     base_prob = 55.0
                     reason = "Pattern အသစ်ဖြစ်နေသဖြင့် သမိုင်းကြောင်းအရ တွက်ချက်ထားသည်"
 
                 final_prob = min(round(base_prob, 1), 85.0)
 
                 LAST_PREDICTED_ISSUE = next_issue
-                LAST_PREDICTED_RESULT = "BIG" if "BIG" in predicted else "SMALL"
+                LAST_PREDICTED_RESULT = "𝗕𝗜𝗚" if "𝗕𝗜𝗚" in predicted else "𝗦𝗠𝗔𝗟𝗟"
                 
                 await predictions_collection.update_one({"issue_number": next_issue}, {"$set": {"predicted_size": LAST_PREDICTED_RESULT, "probability": final_prob, "actual_size": None, "win_lose": None}}, upsert=True)
 
@@ -229,7 +229,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 # --- 🎨 TELEGRAM MESSAGE FORMATTING ---
                 tg_message = (
                     f"☘️ 𝗕𝗶𝗴𝘄𝗶𝗻 𝟯𝟬-𝗦𝗲𝗰𝗼𝗻𝗱𝘀 ☘️\n"
-                    f"━━━━━━━━━━━━━━━━━━\n"
+                   # f"━━━━━━━━━━━━━━━━━━\n"
                     f"{win_lose_text}"
                     f"⏰ Pᴇʀɪᴏᴅ: <code>{next_issue}</code>\n"
                     f"🤖 Cʜᴏɪᴄᴇ {predicted}\n"
@@ -239,11 +239,11 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                    # f"━━━━━━━━━━━━━━━━━━\n"
                    # f"Cᴜʀʀᴇɴᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {CURRENT_WIN_STREAK}\n"
                     #f"Cᴜʀʀᴇɴᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {CURRENT_LOSE_STREAK}\n"
-                    f"━━━━━━━━━━━━━━━━━━\n"
-                    f"Lᴏɴɢᴇsᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {LONGEST_WIN_STREAK}\n"
-                    f"Lᴏɴɢᴇsᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {LONGEST_LOSE_STREAK}\n"
+                    f"━━━━━━━━━━━━━━━━\n"
+                    f"🫧 Lᴏɴɢᴇsᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {LONGEST_WIN_STREAK}\n"
+                    f"🫧 Lᴏɴɢᴇsᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {LONGEST_LOSE_STREAK}\n"
                    # f"━━━━━━━━━━━━━━━━━━\n"
-                    f"Tᴏᴛᴀʟ Pʀᴇᴅɪᴄᴛɪᴏɴs : {TOTAL_PREDICTIONS}"
+                    f"🫧 Tᴏᴛᴀʟ Pʀᴇᴅɪᴄᴛɪᴏɴs : {TOTAL_PREDICTIONS}"
                 )
                 
                 try: 
