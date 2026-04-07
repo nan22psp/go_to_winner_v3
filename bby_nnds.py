@@ -232,7 +232,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                    # f"━━━━━━━━━━━━━━━━━━\n"
                     f"{win_lose_text}"
                     f"⏰ Pᴇʀɪᴏᴅ: <code>{next_issue}</code>\n"
-                    f"🤖 Cʜᴏɪᴄᴇ {predicted}\n"
+                    f"🤖 Cʜᴏɪᴄᴇ {predicted} • {LONGEST_WIN_STREAK} | {LONGEST_LOSE_STREAK} \n"
                     f"📊 Cᴏɴғɪᴅᴇɴᴄᴇ: {final_prob} %\n"
                    # f"💡 <b>အကြောင်းပြချက် :</b>\n"
                    # f"{reason}\n"
