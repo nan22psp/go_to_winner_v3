@@ -144,14 +144,14 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                     TOTAL_PREDICTIONS += 1 
                     
                     if is_win:
-                        win_lose_status = "WIN ✅"
+                        win_lose_status = "𝗪𝗜𝗡🟢"
                         CURRENT_WIN_STREAK += 1
                         CURRENT_LOSE_STREAK = 0
-                        just_won = True # နိုင်ခဲ့ကြောင်း မှတ်သားမည်
+                        just_won = True 
                         if CURRENT_WIN_STREAK > LONGEST_WIN_STREAK:
                             LONGEST_WIN_STREAK = CURRENT_WIN_STREAK
                     else:
-                        win_lose_status = "LOSE"
+                        win_lose_status = "𝗟𝗢𝗦𝗘🔴"
                         CURRENT_LOSE_STREAK += 1
                         CURRENT_WIN_STREAK = 0
                         if CURRENT_LOSE_STREAK > LONGEST_LOSE_STREAK:
@@ -160,8 +160,8 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                     await predictions_collection.update_one({"issue_number": latest_issue}, {"$set": {"actual_size": latest_size, "win_lose": win_lose_status}})
                     
                     win_lose_text = (
-                        f"🏆 <b>ပြီးခဲ့သောပွဲစဉ် ({latest_issue})</b> ရလဒ်: {latest_size}\n"
-                        f"📊 <b>ခန့်မှန်းချက်: {win_lose_status}</b>\n"
+                        f"⏰ Pᴇʀɪᴏᴅ: <code>{latest_issue}</code>\n"                       
+                        f"📊 Rᴇsᴜʟᴛ: {win_lose_status} | {latest_size}\n"
                         f"━━━━━━━━━━━━━━━━━━\n"
                     )
 
@@ -171,7 +171,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 history_docs.reverse()
                 all_history = [doc["size"] for doc in history_docs]
                 
-                predicted = "BIG (အကြီး) 🔴"
+                predicted = "BIG"
                 base_prob = 55.0
                 reason = "Pattern အသစ်ဖြစ်နေသဖြင့် သမိုင်းကြောင်းအရ တွက်ချက်ထားသည်"
                 
@@ -182,7 +182,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 for current_len in range(MAX_PATTERN_LENGTH, MIN_PATTERN_LENGTH - 1, -1):
                     if len(all_history) > current_len:
                         recent_pattern = all_history[-current_len:]
-                        big_next_count = 0
+                        big_next_count = 0 
                         small_next_count = 0
                         for i in range(len(all_history) - current_len):
                             if all_history[i:i+current_len] == recent_pattern:
@@ -197,15 +197,15 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                             pattern_str = "-".join(recent_pattern).replace('BIG', 'B').replace('SMALL', 'S')
                             
                             if big_prob > small_prob:
-                                predicted = "BIG (အကြီး) 🔴"
+                                predicted = "BIG"
                                 base_prob = big_prob
                                 reason = f"[{pattern_str}] လာလျှင် အကြီးဆက်ထွက်လေ့ရှိ၍"
                             elif small_prob > big_prob:
-                                predicted = "SMALL (အသေး) 🟢"
+                                predicted = "SMALL"
                                 base_prob = small_prob
                                 reason = f"[{pattern_str}] လာလျှင် အသေးဆက်ထွက်လေ့ရှိ၍"
                             else:
-                                predicted = "BIG (အကြီး) 🔴"
+                                predicted = "BIG"
                                 base_prob = 50.0
                                 reason = f"[{pattern_str}] အရင်က မျှခြေထွက်ဖူး၍ အကြီးရွေးထားသည်"
                             
@@ -213,7 +213,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                             break 
                             
                 if not pattern_found:
-                    predicted = "BIG (အကြီး) 🔴" if all_history.count("SMALL") > all_history.count("BIG") else "SMALL (အသေး) 🟢"
+                    predicted = "BIG" if all_history.count("SMALL") > all_history.count("BIG") else "SMALL"
                     base_prob = 55.0
                     reason = "Pattern အသစ်ဖြစ်နေသဖြင့် သမိုင်းကြောင်းအရ တွက်ချက်ထားသည်"
 
@@ -228,22 +228,21 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
 
                 # --- 🎨 TELEGRAM MESSAGE FORMATTING ---
                 tg_message = (
-                    f"🎰 <b>Bigwin 30-Seconds (AI Predictor)</b>\n"
+                    f"<b>☘️ 𝗕𝗶𝗴𝘄𝗶𝗻 𝟯𝟬-𝗦𝗲𝗰𝗼𝗻𝗱𝘀 ☘️</b>\n"
                     f"━━━━━━━━━━━━━━━━━━\n"
                     f"{win_lose_text}"
-                    f"🎯 <b>နောက်ပွဲစဉ်အမှတ် :</b>\n"
-                    f"<code>{next_issue}</code>\n"
-                    f"🤖 <b>AI ခန့်မှန်းချက် : {predicted}</b>\n"
-                    f"📈 <b>ဖြစ်နိုင်ခြေ :</b> {final_prob}%\n"
-                    f"💡 <b>အကြောင်းပြချက် :</b>\n"
-                    f"{reason}\n"
-                    f"━━━━━━━━━━━━━━━━━━\n"
-                    f"Cᴜʀʀᴇɴᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {CURRENT_WIN_STREAK}\n"
-                    f"Cᴜʀʀᴇɴᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {CURRENT_LOSE_STREAK}\n"
+                    f"⏰ Pᴇʀɪᴏᴅ: <code>{next_issue}</code>\n"
+                    f"🤖 Cʜᴏɪᴄᴇ {predicted}</b>\n"
+                    f"📊 Cᴏɴғɪᴅᴇɴᴄᴇ: {final_prob} %\n"
+                   # f"💡 <b>အကြောင်းပြချက် :</b>\n"
+                   # f"{reason}\n"
+                   # f"━━━━━━━━━━━━━━━━━━\n"
+                   # f"Cᴜʀʀᴇɴᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {CURRENT_WIN_STREAK}\n"
+                    #f"Cᴜʀʀᴇɴᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {CURRENT_LOSE_STREAK}\n"
                     f"━━━━━━━━━━━━━━━━━━\n"
                     f"Lᴏɴɢᴇsᴛ Wɪɴ Sᴛʀᴇᴀᴋ : {LONGEST_WIN_STREAK}\n"
                     f"Lᴏɴɢᴇsᴛ Lᴏsᴇ Sᴛʀᴇᴀᴋ : {LONGEST_LOSE_STREAK}\n"
-                    f"━━━━━━━━━━━━━━━━━━\n"
+                   # f"━━━━━━━━━━━━━━━━━━\n"
                     f"Tᴏᴛᴀʟ Pʀᴇᴅɪᴄᴛɪᴏɴs : {TOTAL_PREDICTIONS}"
                 )
                 
