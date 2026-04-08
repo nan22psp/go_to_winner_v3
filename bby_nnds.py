@@ -175,8 +175,8 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                 base_prob = 55.0
                 reason = "Pattern အသစ်ဖြစ်နေသဖြင့် သမိုင်းကြောင်းအရ တွက်ချက်ထားသည်"
                 
-                MAX_PATTERN_LENGTH = 4
-                MIN_PATTERN_LENGTH = 4
+                MAX_PATTERN_LENGTH = 5
+                MIN_PATTERN_LENGTH = 5
                 pattern_found = False
                 
                 for current_len in range(MAX_PATTERN_LENGTH, MIN_PATTERN_LENGTH - 1, -1):
@@ -232,7 +232,7 @@ async def check_game_and_predict(session: aiohttp.ClientSession):
                    # f"━━━━━━━━━━━━━━━━━━\n"
                     f"{win_lose_text}"
                     f"⏰ Pᴇʀɪᴏᴅ: <code>{next_issue}</code>\n"
-                    f"🤖 Cʜᴏɪᴄᴇ {predicted} • {LONGEST_WIN_STREAK} | {LONGEST_LOSE_STREAK} \n"
+                    f"🤖 Cʜᴏɪᴄᴇ {predicted} • {CURRENT_WIN_STREAK} | {CURRENT_LOSE_STREAK} \n"
                     f"📊 Cᴏɴғɪᴅᴇɴᴄᴇ: {final_prob} %\n"
                    # f"💡 <b>အကြောင်းပြချက် :</b>\n"
                    # f"{reason}\n"
